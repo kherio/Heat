@@ -1,7 +1,6 @@
 ### Heat Template ###
 description: 
   Load-balancing of servers from Internet (public network) - To launch the stack, use the following command line
-  heat stack-create -f LBaaS.hot -P server_keypair={SERVER_KEYPAIR} {STACK_NAME}
 heat_template_version: 2013-05-23
 
 parameters:
@@ -11,17 +10,17 @@ parameters:
     type: string
   private_network_net:
     label: Private network address
-    default: 10.0.0.0/24
+    default: 10.10.0.0/24
     description: Private network address (e.g. 192.168.0.0/24)
     type: string
   private_network_subnet_low:
     label: Subnet lower IP range
-    default: 10.0.0.2
+    default: 10.10.0.2
     description: Lower IP address for the private subnet (e.g. 192.168.0.2/24) By default, x.x.x.1 will be set for the gateway
     type: string
   private_network_subnet_high:
     label: Subnet higher IP range
-    default: 10.0.0.200
+    default: 10.10.0.200
     description: Higher IP address for the private subnet (e.g. 192.168.0.10/24) By default, x.x.x.1 will be set for the gateway
     type: string
   server_flavor:
@@ -29,7 +28,7 @@ parameters:
     description: Flavor of the servers
     type: string
   server_image:
-    default: ubuntu-12.04
+    default: ubuntu-14.04
     description: Image to use to boot the servers
     type: string
   server_keypair:
@@ -39,7 +38,7 @@ parameters:
   router_name:
     label: Router name
     description: Router name with SourceNAT activate
-    default: front_router
+    default: router_LAB
     type: string
 
 resources:
@@ -105,7 +104,7 @@ resources:
       - end: { get_param: private_network_subnet_high }
         start: { get_param: private_network_subnet_low }
       cidr: { get_param: private_network_net }
-      dns_nameservers: []
+      dns_nameservers: [10.190.14.12]
       enable_dhcp: true
       host_routes: []
       ip_version: 4
