@@ -10,14 +10,17 @@ parameters:
   flavor:
     type: string
     description: flavor used by the servers
-    default: m1.medium
+    default: m1.small
   private_network:
     type: string
     description: Name or ID of the network to which the server will be attached
+    default: 9fabb314-1cdc-4a55-b273-c28c04cd8ecc
   private_subnet_id:
     type: string
+    default: eea21bea-3d8f-449f-992d-b7ab2dc62d5d
   external_network_id:
     type: string
+    default: 4177f6f0-04e9-4217-9faf-0129564210c7
   protocol_port:
     type: number
     description: port number where server listens
@@ -122,7 +125,7 @@ outputs:
   restart_url:
     value: {get_attr: [restarter, AlarmUrl]}
     description: the webhook for the HARestarter
-  alrm:
+  alarm:
     value: {get_resource: gone_alarm}
   ceilometer_query:
     value:
