@@ -1,6 +1,6 @@
 ### Heat Template ###
 description: 
-  Load-balancing of servers from Internet (public network) - To launch the stack, use the following command line
+  Load-balancing of servers from Internet (public network) 
 heat_template_version: 2013-05-23
 
 parameters:
