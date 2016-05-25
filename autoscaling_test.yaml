@@ -1,5 +1,5 @@
 heat_template_version: 2013-05-23
-description: A server subject to health maintenance
+description: An UBUNTU server subject to health maintenance
 parameters:
   image:
     type: string
@@ -43,10 +43,10 @@ resources:
       user_data_format: RAW
       user_data: |
         #!/bin/sh
-        yum install -y httpd
-        service httpd start
-        echo "Open Cloud Foundational Services Demo: " > /var/www/html/index.html
-        echo $(ifconfig eth0 | grep 'inet addr' | awk -F: '{ print $2 }' | awk '{ print $1 }') >> /var/www/html/index.html
+        apt-get install -y apache2
+        service apache2 start
+        echo "Open Cloud Foundational Services Demo: " > /var/www/index.html
+        echo $(ifconfig eth0 | grep 'inet addr' | awk -F: '{ print $2 }' | awk '{ print $1 }') >> /var/www/index.html
 
   restarter:
     type: OS::Heat::HARestarter
