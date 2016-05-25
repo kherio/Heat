@@ -1,0 +1,70 @@
+[[local|localrc]]
+SERVICE_TOKEN=nova
+ADMIN_PASSWORD=supersecret
+DATABASE_PASSWORD=$ADMIN_PASSWORD
+RABBIT_PASSWORD=$ADMIN_PASSWORD
+GUEST_PASSWORD=$ADMIN_PASSWORD
+PUBLIC_INTERFACE=eth0
+FLAT_INTERFACE=eth1
+# FLOATING_RANGE=10.0.14.0/24
+NET_MAN=FlatDHCPManager
+MYSQL_HOST=127.0.0.1
+MYSQL_USER=root
+MYSQL_PASSWORD=$ADMIN_PASSWORD
+RABBIT_HOST=127.0.0.1
+LIBVIRT_TYPE=qemu
+GLANCE_HOSTPORT=127.0.0.1:9292
+SERVICE_PASSWORD=$ADMIN_PASSWORD
+
+## With swift,cinder,ceilometer
+# ENABLED_SERVICES=g-api,g-reg,key,n-api,n-crt,s-object,s-container,s-account,s-proxy,n-cpu,n-net,n-cond,cinder,c-sch,c-api,c-vol,c-bak,n-sch,n-novnc,n-xvnc,n-cauth,horizon,rabbit,tempest,mysql,ceilometer-acompute,ceilometer-acentral,ceilometer-anotification,ceilometer-collector,eilometer-alarm-evaluator,ceilometer-alarm-notifier,ceilometer-api
+
+## Without swift,ceilometer but with cinder
+# ENABLED_SERVICES=g-api,g-reg,key,n-api,n-crt,n-cpu,n-net,n-cond,cinder,c-sch,c-api,c-vol,c-bak,n-sch,n-novnc,n-xvnc,n-cauth,horizon,rabbit,tempest,mysql
+
+## With cinder,ceilometer (but no swift)
+ENABLED_SERVICES=g-api,g-reg,key,n-api,n-crt,n-cpu,n-net,n-cond,cinder,c-sch,c-api,c-vol,c-bak,n-sch,n-novnc,n-xvnc,n-cauth,horizon,rabbit,tempest,mysql,ceilometer-acompute,ceilometer-acentral,ceilometer-anotification,ceilometer-collector,eilometer-alarm-evaluator,ceilometer-alarm-notifier,ceilometer-api
+
+SWIFT_HASH=66a3d6b56c1f479c8b4e70ab5c2000f5
+SWIFT_REPLICAS=1
+SWIFT_DATA_DIR=$DEST/data/swift
+LOGDAYS=1
+LOGFILE=$DEST/devstack.log
+SCREEN_LOGDIR=$DEST/logs/screen
+RECLONE=yes
+API_RATE_LIMIT=False
+
+
+
+[[post-config|$CINDER_CONF]]
+[DEFAULT]
+my_ip=10.72.56.107
+volume_name_template=myvolume-%s
+verbose=True
+debug=True
+auth_strategy=keystone
+enabled_backends = cmodeNFSBackend
+default_volume_type =
+
+## Cinder does not generate notifications by default for ceilometer monitoring
+notification_driver=cinder.openstack.common.notifier.rabbit_notifier
+
+## Driver's specification
+[cmodeNFSBackend]
+volume_backend_name=nfs_volume_netapp
+volume_driver=cinder.volume.drivers.netapp.common.NetAppDriver
+netapp_server_hostname=XX.XX.XX.XX
+netapp_server_port=80
+netapp_storage_protocol=nfs
+netapp_storage_family=ontap_cluster
+netapp_login=admin
+netapp_password=password
+netapp_vserver=my_vs1
+nfs_shares_config=/home/ubuntu/nfs.shares
+
+### Mostly required for ceilometer
+[[post-config|$NOVA_CONF]]
+[DEFAULT]
+
+## Nova does not generate the periodic notifications for all known instances by default.
+instance_usage_audit=true
